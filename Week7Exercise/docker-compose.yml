@@ -1,0 +1,19 @@
+# Thực hành: WAF trên Nginx
+# Dung mot "nguoi gac cong" that: Nginx + ModSecurity + bo luat OWASP CRS
+# dung truoc OWASP Juice Shop (web ban hang co y loi), roi thu tan cong no.
+#
+# Luu y: repo Docker Hub cu "owasp/modsecurity-crs-nginx" da bi go (404),
+# dung image chinh thuc hien nay: owasp/modsecurity-crs, tag "nginx"
+# (tien toan nhu nhau: nginx + ModSecurity v3 + bo luat OWASP CRS co san).
+services:
+  web:
+    image: bkimminich/juice-shop
+    ports: ['3000:3000']
+
+  waf:
+    image: owasp/modsecurity-crs:nginx
+    ports: ['8080:8080']
+    environment:
+      BACKEND: http://web:3000     # WAF chuyen request hop le toi dau
+      MODSEC_RULE_ENGINE: "On"     # On = chan, DetectionOnly = chi ghi log
+      BLOCKING_PARANOIA: "1"       # muc 1-4; cang cao cang de chan nham
